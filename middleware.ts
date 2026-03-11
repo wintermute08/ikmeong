@@ -1,6 +1,16 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const cspHeader = [
+  "default-src 'self';",
+  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https:;",
+  "style-src 'self' 'unsafe-inline' https:;",
+  "img-src 'self' data: blob: https:;",
+  "font-src 'self' https: data:;",
+  "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co https://cdn.jsdelivr.net https:;",
+  "frame-src 'self' https://*.supabase.co https://*.supabase.in https://accounts.google.com https://github.com https://api.github.com;",
+].join(' ')
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -21,7 +31,13 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data?.user ?? null
+  } catch {
+    // If auth check fails, treat as unauthenticated
+  }
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
   const isPublic = isAuthPage || request.nextUrl.pathname === '/favicon.ico'
@@ -29,18 +45,24 @@ export async function middleware(request: NextRequest) {
   if (!user && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
-    return NextResponse.redirect(url)
+    const redirectResponse = NextResponse.redirect(url)
+    redirectResponse.headers.set('Content-Security-Policy', cspHeader)
+    return redirectResponse
   }
 
   if (user && isAuthPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
-    return NextResponse.redirect(url)
+    const redirectResponse = NextResponse.redirect(url)
+    redirectResponse.headers.set('Content-Security-Policy', cspHeader)
+    return redirectResponse
   }
 
+  supabaseResponse.headers.set('Content-Security-Policy', cspHeader)
   return supabaseResponse
 }
 
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
 }
+

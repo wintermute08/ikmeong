@@ -1,16 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const cspHeader = [
-  "default-src 'self';",
-  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https:;",
-  "style-src 'self' 'unsafe-inline' https:;",
-  "img-src 'self' data: blob: https:;",
-  "font-src 'self' https: data:;",
-  "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co https://cdn.jsdelivr.net https:;",
-  "frame-src 'self' https://*.supabase.co https://*.supabase.in https://accounts.google.com https://github.com https://api.github.com;",
-].join(' ')
-
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -36,7 +26,7 @@ export async function middleware(request: NextRequest) {
     const { data } = await supabase.auth.getUser()
     user = data?.user ?? null
   } catch {
-    // If auth check fails, treat as unauthenticated
+    // Auth check failed — treat as unauthenticated
   }
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
@@ -45,20 +35,15 @@ export async function middleware(request: NextRequest) {
   if (!user && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
-    const redirectResponse = NextResponse.redirect(url)
-    redirectResponse.headers.set('Content-Security-Policy', cspHeader)
-    return redirectResponse
+    return NextResponse.redirect(url)
   }
 
   if (user && isAuthPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
-    const redirectResponse = NextResponse.redirect(url)
-    redirectResponse.headers.set('Content-Security-Policy', cspHeader)
-    return redirectResponse
+    return NextResponse.redirect(url)
   }
 
-  supabaseResponse.headers.set('Content-Security-Policy', cspHeader)
   return supabaseResponse
 }
 

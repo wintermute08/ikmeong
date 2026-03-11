@@ -30,22 +30,27 @@ export default function LoginPage() {
     }
 
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (error) {
-      if (error.message.includes('Invalid login credentials')) {
-        setError('이메일 또는 비밀번호가 올바르지 않아요.')
-      } else if (error.message.includes('Email not confirmed')) {
-        setError('이메일 인증 후 로그인해 주세요.')
-      } else {
-        setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          setError('이메일 또는 비밀번호가 올바르지 않아요.')
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('이메일 인증 후 로그인해 주세요.')
+        } else {
+          setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
+        }
+        setLoading(false)
+        return
       }
-      setLoading(false)
-      return
-    }
 
-    router.push('/')
-    router.refresh()
+      router.push('/')
+      router.refresh()
+    } catch {
+      setError('서버 연결에 실패했어요. 인터넷 연결을 확인해 주세요.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -101,8 +106,8 @@ export default function LoginPage() {
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
               로그인 중...
             </span>
@@ -111,9 +116,9 @@ export default function LoginPage() {
       </form>
 
       <div className="flex items-center gap-3 my-6">
-        <div className="flex-1 h-px bg-line"/>
+        <div className="flex-1 h-px bg-line" />
         <span className="text-ink3 text-[13px]">또는</span>
-        <div className="flex-1 h-px bg-line"/>
+        <div className="flex-1 h-px bg-line" />
       </div>
 
       <Link href="/auth/signup">

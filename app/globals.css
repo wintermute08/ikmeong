@@ -1,0 +1,130 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #C6613F;
+  --accent-light: #FDF0EB;
+  --accent-mid: #E8896A;
+  --bg: #FFFFFF;
+  --bg2: #F7F7F8;
+  --bg3: #EFEFEF;
+  --ink: #111111;
+  --ink2: #555555;
+  --ink3: #AAAAAA;
+  --line: #EBEBEB;
+  --radius: 16px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 32px rgba(0,0,0,0.10);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 0px; }
+
+/* Transitions */
+a, button { transition: all 0.15s ease; }
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-accent text-white font-semibold rounded-2xl px-6 py-3 text-[15px] hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-surface text-ink font-semibold rounded-2xl px-6 py-3 text-[15px] hover:bg-surface2 active:scale-[0.98] transition-all;
+  }
+
+  .btn-ghost {
+    @apply text-ink2 font-medium rounded-xl px-4 py-2 text-[14px] hover:bg-surface active:bg-surface2 transition-all;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-line;
+  }
+
+  .input-base {
+    @apply w-full bg-surface rounded-2xl px-4 py-3.5 text-[15px] text-ink placeholder:text-ink3 border border-transparent focus:border-accent focus:bg-white focus:outline-none transition-all;
+  }
+
+  .tag {
+    @apply inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1 rounded-lg;
+  }
+
+  .tag-notice { @apply bg-amber-50 text-amber-700; }
+  .tag-anon { @apply bg-purple-50 text-purple-700; }
+  .tag-qna { @apply bg-blue-50 text-blue-700; }
+
+  .bottom-nav-item {
+    @apply flex flex-col items-center gap-0.5 px-4 py-2 text-ink3 hover:text-accent transition-colors cursor-pointer;
+  }
+
+  .post-row {
+    @apply flex flex-col gap-1.5 p-4 border-b border-line last:border-0 active:bg-surface cursor-pointer transition-colors hover:bg-surface/50;
+  }
+}
+
+/* Page transition */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: fadeUp 0.22s ease both;
+}
+
+/* Bottom sheet */
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.sheet-enter {
+  animation: sheetUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+/* Skeleton */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 8px;
+}
+
+/* Toast */
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.toast-enter {
+  animation: toastIn 0.22s ease both;
+}

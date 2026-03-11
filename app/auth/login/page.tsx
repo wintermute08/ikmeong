@@ -45,8 +45,7 @@ export default function LoginPage() {
         return
       }
 
-      router.push('/')
-      router.refresh()
+      window.location.href = '/'
     } catch {
       setError('서버 연결에 실패했어요. 인터넷 연결을 확인해 주세요.')
       setLoading(false)

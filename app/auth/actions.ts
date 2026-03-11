@@ -2,14 +2,13 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { isRedirectError } from 'next/dist/client/components/redirect'
 
 export async function login(username: string, password: string) {
   try {
     const supabase = createClient()
-    
+
     const dummyEmail = `${username.trim()}@ikmeong.local`
-    
+
     const { error } = await supabase.auth.signInWithPassword({
       email: dummyEmail,
       password,
@@ -19,19 +18,23 @@ export async function login(username: string, password: string) {
       return { error: error.message }
     }
 
-    // Next.js redirect from a Server Action works perfectly
+    // 로그인 성공 → 홈 이동
     redirect('/')
   } catch (err: any) {
-    if (isRedirectError(err)) throw err
     console.error('Login action error:', err)
     return { error: err.message || '서버 오류가 발생했습니다.' }
   }
 }
 
-export async function signup(username: string, password: string, nickname: string, grade: string) {
+export async function signup(
+  username: string,
+  password: string,
+  nickname: string,
+  grade: string
+) {
   try {
     const supabase = createClient()
-    
+
     const dummyEmail = `${username.toLowerCase()}@ikmeong.local`
 
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -41,8 +44,8 @@ export async function signup(username: string, password: string, nickname: strin
         data: {
           nickname,
           grade: grade ? parseInt(grade) : null,
-        }
-      }
+        },
+      },
     })
 
     if (authError) {
@@ -68,6 +71,8 @@ export async function signup(username: string, password: string, nickname: strin
 
 export async function logout() {
   const supabase = createClient()
+
   await supabase.auth.signOut()
+
   redirect('/auth/login')
 }

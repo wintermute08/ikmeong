@@ -27,7 +27,7 @@ export default function LoginPage() {
         if (res.error.includes('Invalid login credentials')) {
           setError('아이디 또는 비밀번호가 올바르지 않아요.')
         } else {
-          setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
+          setError(res.error) // Show exact raw Supabase error
         }
         setLoading(false)
       }

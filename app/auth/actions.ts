@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { isRedirectError } from 'next/dist/client/components/redirect'
 
 export async function login(username: string, password: string) {
   try {
@@ -21,6 +22,7 @@ export async function login(username: string, password: string) {
     // Next.js redirect from a Server Action works perfectly
     redirect('/')
   } catch (err: any) {
+    if (isRedirectError(err)) throw err
     console.error('Login action error:', err)
     return { error: err.message || '서버 오류가 발생했습니다.' }
   }

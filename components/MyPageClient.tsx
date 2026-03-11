@@ -70,7 +70,7 @@ export default function MyPageClient({ profile, postCount, commentCount, myPosts
             )}
           </div>
 
-          <p className="text-ink3 text-[13px] mb-4">{profile.email}</p>
+          <p className="text-ink3 text-[13px] mb-4">아이디: {profile.email.split('@')[0]}</p>
 
           {/* Stats */}
           <div className="grid grid-cols-2 gap-3">

@@ -35,13 +35,29 @@ export async function middleware(request: NextRequest) {
   if (!user && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
-    return NextResponse.redirect(url)
+    const redirectResponse = NextResponse.redirect(url)
+    
+    // Pass over Supabase cookies if any were set
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      const { name, value, ...options } = cookie
+      redirectResponse.cookies.set(name, value, options)
+    })
+    
+    return redirectResponse
   }
 
   if (user && isAuthPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
-    return NextResponse.redirect(url)
+    const redirectResponse = NextResponse.redirect(url)
+    
+    // Pass over Supabase cookies if any were set
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      const { name, value, ...options } = cookie
+      redirectResponse.cookies.set(name, value, options)
+    })
+
+    return redirectResponse
   }
 
   return supabaseResponse

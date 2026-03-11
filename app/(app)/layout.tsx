@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import TopBar from '@/components/TopBar'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()

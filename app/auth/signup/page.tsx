@@ -9,7 +9,7 @@ export default function SignupPage() {
   const router = useRouter()
   const supabase = createClient()
   const [step, setStep] = useState(1)
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const [nickname, setNickname] = useState('')
@@ -17,20 +17,17 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const ALLOWED_DOMAINS = (process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS || 'ikmeong.hs.kr').split(',')
-
-  const isAllowedEmail = (email: string) => {
-    const domain = email.split('@')[1]
-    return ALLOWED_DOMAINS.includes(domain)
-  }
-
   const handleStep1 = (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    if (!isAllowedEmail(email)) {
-      setError(`잌명고등학교 학교 이메일(@${ALLOWED_DOMAINS[0]})만 가입 가능해요.`)
+    
+    // Basic username validation: alphanumeric, 4 to 15 chars
+    const usernameRegex = /^[a-zA-Z0-9]{4,15}$/
+    if (!usernameRegex.test(username)) {
+      setError('아이디는 영문, 숫자 4~15자로 입력해 주세요.')
       return
     }
+    
     if (password.length < 8) {
       setError('비밀번호는 8자 이상이어야 해요.')
       return
@@ -56,11 +53,12 @@ export default function SignupPage() {
 
     setLoading(true)
 
+    const dummyEmail = `${username.toLowerCase()}@ikmeong.local`
+
     const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
+      email: dummyEmail,
       password,
       options: {
-        emailRedirectTo: `${location.origin}/auth/callback`,
         data: {
           nickname,
           grade: grade ? parseInt(grade) : null,
@@ -70,7 +68,7 @@ export default function SignupPage() {
 
     if (authError) {
       if (authError.message.includes('already registered')) {
-        setError('이미 가입된 이메일이에요.')
+        setError('이미 사용 중인 아이디예요.')
       } else {
         setError('가입 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
       }
@@ -82,7 +80,7 @@ export default function SignupPage() {
     if (authData.user) {
       await supabase.from('profiles').insert({
         id: authData.user.id,
-        email,
+        email: dummyEmail,
         nickname,
         grade: grade ? parseInt(grade) : null,
         role: 'student',
@@ -104,8 +102,7 @@ export default function SignupPage() {
         <h2 className="text-[24px] font-black text-ink mb-3">가입 완료!</h2>
         <p className="text-ink2 text-[15px] mb-2">잌명 커뮤니티에 오신 걸 환영해요 🎉</p>
         <p className="text-ink3 text-[13px] mb-8">
-          이메일 인증 없이 바로 이용 가능해요.<br/>
-          학교 이메일로 가입하셨으니 바로 로그인해 보세요!
+          이제 생성하신 아이디로 바로 로그인해 보세요!
         </p>
         <Link href="/auth/login">
           <button className="btn-primary w-full">로그인하기</button>
@@ -135,20 +132,20 @@ export default function SignupPage() {
           {step === 1 ? '계정 만들기' : '프로필 설정'}
         </h1>
         <p className="text-ink3 text-[14px] mt-1">
-          {step === 1 ? '학교 이메일로 바로 가입할 수 있어요' : '어떻게 불러드릴까요?'}
+          {step === 1 ? '사용할 아이디와 비밀번호를 입력해 주세요' : '어떻게 불러드릴까요?'}
         </p>
       </div>
 
       {step === 1 && (
         <form onSubmit={handleStep1} className="flex flex-col gap-3">
           <div>
-            <label className="text-[13px] font-semibold text-ink2 mb-1.5 block">학교 이메일</label>
+            <label className="text-[13px] font-semibold text-ink2 mb-1.5 block">아이디</label>
             <input
-              type="email"
+              type="text"
               className="input-base"
-              placeholder="student@ikmeong.hs.kr"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              placeholder="영문, 숫자 4~15자"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
               required
             />
           </div>

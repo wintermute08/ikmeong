@@ -131,7 +131,7 @@ export default function AdminClient({ reports: initialReports, userCount, postCo
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold text-ink truncate">{user.nickname}</p>
-                  <p className="text-ink3 text-[11px] truncate">{user.email}</p>
+                  <p className="text-ink3 text-[11px] truncate">아이디: {user.email.split('@')[0]}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`tag text-[10px] ${user.role === 'admin' ? 'bg-accent-light text-accent' : 'bg-surface2 text-ink3'}`}>

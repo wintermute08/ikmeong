@@ -8,36 +8,32 @@ import { createClient } from '@/lib/supabase/client'
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
-  const ALLOWED_DOMAINS = (process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS || 'ikmeong.hs.kr').split(',')
-
-  const isAllowedEmail = (email: string) => {
-    const domain = email.split('@')[1]
-    return ALLOWED_DOMAINS.includes(domain)
-  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!isAllowedEmail(email)) {
-      setError(`학교 이메일(@${ALLOWED_DOMAINS[0]})만 로그인 가능해요.`)
+    if (!username.trim() || username.includes('@')) {
+      setError('올바른 아이디를 입력해 주세요.')
       return
     }
 
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      // Map username to dummy email
+      const dummyEmail = `${username.trim()}@ikmeong.local`
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email: dummyEmail, 
+        password 
+      })
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
-          setError('이메일 또는 비밀번호가 올바르지 않아요.')
-        } else if (error.message.includes('Email not confirmed')) {
-          setError('이메일 인증 후 로그인해 주세요.')
+          setError('아이디 또는 비밀번호가 올바르지 않아요.')
         } else {
           setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
         }
@@ -66,15 +62,15 @@ export default function LoginPage() {
       {/* Form */}
       <form onSubmit={handleLogin} className="flex flex-col gap-3">
         <div>
-          <label className="text-[13px] font-semibold text-ink2 mb-1.5 block">학교 이메일</label>
+          <label className="text-[13px] font-semibold text-ink2 mb-1.5 block">아이디</label>
           <input
-            type="email"
+            type="text"
             className="input-base"
-            placeholder="student@ikmeong.hs.kr"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
+            placeholder="아이디를 입력하세요"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
             required
-            autoComplete="email"
+            autoComplete="username"
           />
         </div>
 
@@ -123,10 +119,6 @@ export default function LoginPage() {
       <Link href="/auth/signup">
         <button className="btn-secondary w-full">회원가입</button>
       </Link>
-
-      <p className="text-center text-ink3 text-[13px] mt-6">
-        잌명고등학교 학교 이메일로만 가입할 수 있어요
-      </p>
     </div>
   )
 }

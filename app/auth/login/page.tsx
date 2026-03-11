@@ -3,11 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { login } from '@/app/auth/actions'
 
 export default function LoginPage() {
-  const router = useRouter()
-  const supabase = createClient()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -24,24 +22,16 @@ export default function LoginPage() {
 
     setLoading(true)
     try {
-      // Map username to dummy email
-      const dummyEmail = `${username.trim()}@ikmeong.local`
-      const { error } = await supabase.auth.signInWithPassword({ 
-        email: dummyEmail, 
-        password 
-      })
-
-      if (error) {
-        if (error.message.includes('Invalid login credentials')) {
+      const res = await login(username, password)
+      if (res?.error) {
+        if (res.error.includes('Invalid login credentials')) {
           setError('아이디 또는 비밀번호가 올바르지 않아요.')
         } else {
           setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
         }
         setLoading(false)
-        return
       }
-
-      window.location.href = '/'
+      // If success, the Server Action redirects. No need to redirect here.
     } catch {
       setError('서버 연결에 실패했어요. 인터넷 연결을 확인해 주세요.')
       setLoading(false)

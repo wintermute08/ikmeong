@@ -3,11 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { signup } from '@/app/auth/actions'
 
 export default function SignupPage() {
-  const router = useRouter()
-  const supabase = createClient()
   const [step, setStep] = useState(1)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -53,41 +51,24 @@ export default function SignupPage() {
 
     setLoading(true)
 
-    const dummyEmail = `${username.toLowerCase()}@ikmeong.local`
-
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: dummyEmail,
-      password,
-      options: {
-        data: {
-          nickname,
-          grade: grade ? parseInt(grade) : null,
+    try {
+      const res = await signup(username, password, nickname, grade)
+      
+      if (res?.error) {
+        if (res.error.includes('already registered')) {
+          setError('이미 사용 중인 아이디예요.')
+        } else {
+          setError('가입 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
         }
+        setLoading(false)
+        return
       }
-    })
 
-    if (authError) {
-      if (authError.message.includes('already registered')) {
-        setError('이미 사용 중인 아이디예요.')
-      } else {
-        setError('가입 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
-      }
-      setLoading(false)
-      return
+      setStep(3)
+    } catch {
+      setError('서버 연결에 실패했어요. 인터넷 연결을 확인해 주세요.')
     }
-
-    // Create profile
-    if (authData.user) {
-      await supabase.from('profiles').insert({
-        id: authData.user.id,
-        email: dummyEmail,
-        nickname,
-        grade: grade ? parseInt(grade) : null,
-        role: 'student',
-      })
-    }
-
-    setStep(3)
+    
     setLoading(false)
   }
 

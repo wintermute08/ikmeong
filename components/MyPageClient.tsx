@@ -14,6 +14,8 @@ interface Props {
   myPosts: Post[]
 }
 
+import { logout } from '@/app/auth/actions'
+
 export default function MyPageClient({ profile, postCount, commentCount, myPosts }: Props) {
   const router = useRouter()
   const supabase = createClient()
@@ -30,8 +32,7 @@ export default function MyPageClient({ profile, postCount, commentCount, myPosts
   }
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/auth/login')
+    await logout()
   }
 
   const gradeLabel = profile.grade ? `${profile.grade}학년` : '학년 미설정'

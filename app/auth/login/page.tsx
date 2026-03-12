@@ -35,8 +35,8 @@ export default function LoginPage() {
         }
         setLoading(false)
       } else if (res?.success) {
-        // client-side redirect when login succeeds
-        window.location.href = '/'
+        // use replace to avoid back-button loops
+        window.location.replace('/')
       }
     } catch {
       setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')

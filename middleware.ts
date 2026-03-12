@@ -2,17 +2,25 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
-  const debugAuth = process.env.DEBUG_AUTH === '1'
+  let supabaseResponse = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return request.cookies.getAll() },
+        getAll() {
+          return request.cookies.getAll()
+        },
         setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({
+            request,
+          })
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
@@ -21,64 +29,33 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  let user = null
-  let authError: unknown = null
-  try {
-    const { data } = await supabase.auth.getUser()
-    user = data?.user ?? null
-  } catch {
-    // Auth check failed — treat as unauthenticated
-    authError = true
-  }
+  // IMPORTANT: Do not run code between createServerClient and
+  // getUser(). A simple mistake can make it very hard to debug
+  // issues with users being randomly logged out.
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/auth') || request.nextUrl.pathname.startsWith('/api/auth')
-  const isPublic = isAuthPage || request.nextUrl.pathname === '/favicon.ico'
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  if (debugAuth) {
-    try {
-      const cookieNames = request.cookies.getAll().map(c => c.name)
-      const hasSb = cookieNames.some(n => n.startsWith('sb-'))
-      console.log('[auth-debug]', {
-        path: request.nextUrl.pathname,
-        method: request.method,
-        hasUser: Boolean(user),
-        authError: Boolean(authError),
-        cookieCount: cookieNames.length,
-        hasSupabaseCookies: hasSb,
-        host: request.headers.get('host'),
-        proto: request.headers.get('x-forwarded-proto'),
-      })
-    } catch (e) {
-      console.log('[auth-debug] log failed', e)
-    }
-  }
+  const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
+  const isApiAuthPage = request.nextUrl.pathname.startsWith('/api/auth')
+  const isPublic = isAuthPage || isApiAuthPage || request.nextUrl.pathname === '/favicon.ico'
 
   if (!user && !isPublic) {
+    // no user, potentially respond with a 401 if it's an API route
+    if (request.nextUrl.pathname.startsWith('/api/')) {
+       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
-    const redirectResponse = NextResponse.redirect(url)
-    
-    // Pass over Supabase cookies if any were set
-    supabaseResponse.cookies.getAll().forEach((cookie) => {
-      const { name, value, ...options } = cookie
-      redirectResponse.cookies.set(name, value, options)
-    })
-    
-    return redirectResponse
+    return NextResponse.redirect(url)
   }
 
   if (user && isAuthPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
-    const redirectResponse = NextResponse.redirect(url)
-    
-    // Pass over Supabase cookies if any were set
-    supabaseResponse.cookies.getAll().forEach((cookie) => {
-      const { name, value, ...options } = cookie
-      redirectResponse.cookies.set(name, value, options)
-    })
-
-    return redirectResponse
+    return NextResponse.redirect(url)
   }
 
   return supabaseResponse
@@ -89,4 +66,3 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
-

@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
   )
 
-  const dummyEmail = `${username.toLowerCase()}@ikmeong.local`
+  const dummyEmail = `${username.trim().toLowerCase()}@ikmeong.local`
   const { error } = await supabase.auth.signInWithPassword({ email: dummyEmail, password })
 
   if (error) {

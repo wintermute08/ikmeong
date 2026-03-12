@@ -27,18 +27,14 @@ export default function LoginPage() {
     try {
       const res = await login(username, password)
 
-      // If res is returned, it means it didn't redirect (failure case)
       if (res?.error) {
         setError(res.error)
         setLoading(false)
+      } else if (res?.success) {
+        // 성공 시 홈으로 강제 이동 (세션 갱신 보장)
+        window.location.replace('/')
       }
     } catch (err: any) {
-      // Next.js redirect treats the redirect as an error, but we should not catch it as a "visible" error
-      // if it's a redirect. However, usually calling a server action that redirects from client
-      // will just make the browser redirect without hitting the catch block for REDIRECT.
-      // But just in case:
-      if (err.message === 'NEXT_REDIRECT') return
-
       setError('로그인 중 오류가 발생했어요. 다시 시도해 주세요.')
       setLoading(false)
     }

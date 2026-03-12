@@ -21,9 +21,7 @@ export async function login(username: string, password: string) {
     return { error: error.message }
   }
 
-  // 성공 시 바로 홈으로 리다이렉트
-  // 서버 액션에서의 리다이렉트는 쿠키 동기화를 가장 확실하게 보장합니다.
-  redirect('/')
+  return { success: true }
 }
 
 export async function signup(

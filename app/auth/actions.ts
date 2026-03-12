@@ -16,6 +16,10 @@ export async function login(username: string, password: string) {
     return { error: error.message }
   }
 
+  // We no longer redirect from the server action because
+  // a Redirect response prevents the client from receiving
+  // the result and leaves the form stuck in loading state.
+  // Instead, return a success flag and let the client push.
   return { success: true }
 }
 

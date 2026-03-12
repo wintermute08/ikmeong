@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { login } from '@/app/auth/actions'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -24,20 +25,21 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const r = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      })
-      const data = await r.json().catch(() => ({} as any))
-      if (!r.ok) {
-        setError(data?.error ? String(data.error) : '아이디 또는 비밀번호가 올바르지 않습니다.')
-        return
+      const res = await login(username, password)
+
+      if (res?.error) {
+        if (res.error.includes('Invalid login credentials')) {
+          setError('아이디 또는 비밀번호가 올바르지 않아요.')
+        } else {
+          setError(res.error)
+        }
+        setLoading(false)
+      } else if (res?.success) {
+        // client-side redirect when login succeeds
+        window.location.href = '/'
       }
-      window.location.href = '/'
     } catch {
       setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
-    } finally {
       setLoading(false)
     }
   }

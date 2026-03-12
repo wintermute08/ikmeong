@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
     authError = true
   }
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
+  const isAuthPage = request.nextUrl.pathname.startsWith('/auth') || request.nextUrl.pathname.startsWith('/api/auth')
   const isPublic = isAuthPage || request.nextUrl.pathname === '/favicon.ico'
 
   if (debugAuth) {

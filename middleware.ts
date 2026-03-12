@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
+  const debugAuth = process.env.DEBUG_AUTH === '1'
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,15 +22,36 @@ export async function middleware(request: NextRequest) {
   )
 
   let user = null
+  let authError: unknown = null
   try {
     const { data } = await supabase.auth.getUser()
     user = data?.user ?? null
   } catch {
     // Auth check failed — treat as unauthenticated
+    authError = true
   }
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
   const isPublic = isAuthPage || request.nextUrl.pathname === '/favicon.ico'
+
+  if (debugAuth) {
+    try {
+      const cookieNames = request.cookies.getAll().map(c => c.name)
+      const hasSb = cookieNames.some(n => n.startsWith('sb-'))
+      console.log('[auth-debug]', {
+        path: request.nextUrl.pathname,
+        method: request.method,
+        hasUser: Boolean(user),
+        authError: Boolean(authError),
+        cookieCount: cookieNames.length,
+        hasSupabaseCookies: hasSb,
+        host: request.headers.get('host'),
+        proto: request.headers.get('x-forwarded-proto'),
+      })
+    } catch (e) {
+      console.log('[auth-debug] log failed', e)
+    }
+  }
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone()

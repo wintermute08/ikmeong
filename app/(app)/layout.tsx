@@ -6,8 +6,13 @@ import TopBar from '@/components/TopBar'
 export const dynamic = 'force-dynamic'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const debugAuth = process.env.DEBUG_AUTH === '1'
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
+
+  if (debugAuth) {
+    console.log('[auth-debug][app-layout]', { hasUser: Boolean(user) })
+  }
 
   if (!user) {
     redirect('/auth/login')

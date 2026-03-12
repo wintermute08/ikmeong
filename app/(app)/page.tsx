@@ -3,7 +3,7 @@ import Link from 'next/link'
 import PostCard from '@/components/PostCard'
 
 export default async function HomePage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   const { data: profile } = await supabase
@@ -65,7 +65,7 @@ export default async function HomePage() {
                   <span className="text-[11px] font-bold text-accent bg-white px-2 py-0.5 rounded-lg shrink-0">공지</span>
                   <p className="text-[14px] font-semibold text-ink flex-1 truncate">{post.title}</p>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C6613F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-                    <polyline points="9 18 15 12 9 6"/>
+                    <polyline points="9 18 15 12 9 6" />
                   </svg>
                 </div>
               </Link>
@@ -135,13 +135,13 @@ export default async function HomePage() {
             ))
           ) : (
             <div className="py-12 text-center text-ink3 text-[14px]">
-              아직 게시글이 없어요.<br/>첫 번째 글을 남겨보세요!
+              아직 게시글이 없어요.<br />첫 번째 글을 남겨보세요!
             </div>
           )}
         </div>
       </section>
 
-      <div className="h-6"/>
+      <div className="h-6" />
     </div>
   )
 }

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import PostCard from '@/components/PostCard'
 
 export default async function NoticePage() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user!.id).single()
@@ -63,7 +63,7 @@ export default async function NoticePage() {
           </div>
         </div>
       </div>
-      <div className="h-6"/>
+      <div className="h-6" />
     </div>
   )
 }

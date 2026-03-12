@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default async function PostPage({ params }: Props) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   // Increment views
@@ -26,7 +26,7 @@ export default async function PostPage({ params }: Props) {
     .from('posts')
     .update({ views: (post.views || 0) + 1 })
     .eq('id', post.id)
-    .then(() => {})
+    .then(() => { })
 
   // Get comments
   const { data: comments } = await supabase

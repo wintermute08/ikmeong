@@ -105,7 +105,7 @@ export default function MyPageClient({ profile, postCount, commentCount, myPosts
               <span className="text-xl">📁</span>
               <span className="text-[15px] font-medium text-ink flex-1">자료실</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AAAAAA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </div>
           </Link>
@@ -121,12 +121,12 @@ export default function MyPageClient({ profile, postCount, commentCount, myPosts
 
       <div className="px-5 mt-6">
         <p className="text-ink3 text-[12px] text-center leading-relaxed">
-          잌명고등학교 학생 전용 서비스입니다<br/>
+          잌명고등학교 학생 전용 서비스입니다<br />
           문의: ikmeong@school.kr
         </p>
       </div>
 
-      <div className="h-6"/>
+      <div className="h-6" />
     </div>
   )
 }

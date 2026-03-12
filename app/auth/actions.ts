@@ -21,7 +21,8 @@ export async function login(username: string, password: string) {
     return { error: error.message }
   }
 
-  return { success: true }
+  // Next.js 공식 가이드: 서버 액션에서 성공 시 redirect() 호출
+  redirect('/')
 }
 
 export async function signup(
@@ -34,13 +35,14 @@ export async function signup(
   const trimmedUsername = username.trim().toLowerCase()
   const dummyEmail = `${trimmedUsername}@ikmeong.local`
 
-  // 1. Auth 회원가입
-  const { data, error: signUpError } = await supabase.auth.signUp({
+  // 1. Auth 회원가입만 수행
+  // profiles 테이블 삽입은 DB 트리거(on_auth_user_created)가 담당합니다.
+  const { error: signUpError } = await supabase.auth.signUp({
     email: dummyEmail,
     password,
     options: {
       data: {
-        nickname,
+        nickname: nickname.trim(),
         grade: grade ? parseInt(grade) : null,
       },
     },
@@ -53,31 +55,13 @@ export async function signup(
     return { error: signUpError.message }
   }
 
-  // 2. Profile 생성 (Auth 유저가 정상 생성된 경우)
-  if (data.user) {
-    const { error: profileError } = await supabase.from('profiles').upsert({
-      id: data.user.id,
-      email: dummyEmail,
-      nickname: nickname.trim(),
-      grade: grade ? parseInt(grade) : null,
-      role: 'student',
-    })
-
-    if (profileError) {
-      console.error('Profile creation failed:', profileError)
-      // 프로필 생성 실패 시에도 일단 가입은 된 것이므로 성공으로 간주하거나, 
-      // 혹은 유저에게 알릴 수 있음. 여기서는 일단 성공으로 반환.
-    }
-  }
-
   return { success: true }
 }
 
 export async function logout() {
   const supabase = createClient()
-
   await supabase.auth.signOut()
-
   redirect('/auth/login')
 }
+
 

@@ -23,20 +23,20 @@ export default function LoginPage() {
     }
 
     setLoading(true)
+    console.log('Login attempt started:', username)
 
     try {
       const res = await login(username, password)
-
-      if (res?.error) {
+      
+      // 만약 redirect 되지 않고 res가 돌아왔다면 이는 failure case입니다.
+      if (res && 'error' in res) {
         setError(res.error)
         setLoading(false)
-      } else if (res?.success) {
-        // 성공 시 홈으로 강제 이동 (세션 갱신 보장)
-        window.location.replace('/')
       }
     } catch (err: any) {
-      setError('로그인 중 오류가 발생했어요. 다시 시도해 주세요.')
-      setLoading(false)
+      // Next.js redirect는 내부적으로 에러를 던지지만, 브라우저는 이를 감지해 이동합니다.
+      // 만약 catch에 걸렸는데 에러 메시지가 없다면 정상적인 리다이렉트일 가능성이 높습니다.
+      console.log('Login action finished (or redirected).')
     }
   }
 

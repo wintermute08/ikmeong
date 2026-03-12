@@ -18,7 +18,7 @@ export default function LoginPage() {
     setError('')
 
     if (!username.trim()) {
-      setError('아이디를 입력하세요.')
+      setError('아이디를 입력해 주세요.')
       return
     }
 
@@ -33,54 +33,70 @@ export default function LoginPage() {
         return
       }
 
+      setLoading(false)
       router.push('/')
     } catch {
-      setError('서버 오류가 발생했습니다.')
+      setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
       setLoading(false)
     }
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20">
-      <h1 className="text-2xl font-bold mb-6 text-center">잌명 로그인</h1>
+    <div className="page-enter">
+      <div className="mb-8 mt-6">
+        <h1 className="text-[24px] font-black text-ink">로그인</h1>
+        <p className="text-ink3 text-[14px] mt-1">아이디와 비밀번호를 입력해 주세요</p>
+      </div>
 
       <form onSubmit={handleLogin} className="flex flex-col gap-3">
-        <input
-          type="text"
-          placeholder="아이디"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="border p-3 rounded"
-        />
+        <div>
+          <label className="text-[13px] font-semibold text-ink2 mb-1.5 block">아이디</label>
+          <input
+            type="text"
+            placeholder="아이디를 입력"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="input-base"
+            autoComplete="username"
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="비밀번호"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-3 rounded"
-        />
+        <div>
+          <label className="text-[13px] font-semibold text-ink2 mb-1.5 block">비밀번호</label>
+          <input
+            type="password"
+            placeholder="비밀번호를 입력"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="input-base"
+            autoComplete="current-password"
+          />
+        </div>
 
         {error && (
-          <div className="text-red-500 text-sm">
-            {error}
-          </div>
+          <div className="bg-red-50 text-red-600 text-[13px] font-medium px-4 py-3 rounded-xl">{error}</div>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="bg-black text-white p-3 rounded"
+          className="btn-primary w-full mt-2"
         >
           {loading ? '로그인 중...' : '로그인'}
         </button>
       </form>
 
-      <Link href="/auth/signup">
-        <button className="mt-4 w-full border p-3 rounded">
-          회원가입
-        </button>
-      </Link>
+      <div className="mt-4">
+        <Link href="/auth/signup">
+          <button className="btn-secondary w-full">
+            회원가입
+          </button>
+        </Link>
+      </div>
+
+      <p className="text-center text-ink3 text-[12px] mt-6 leading-relaxed">
+        로그인 문제가 있다면 <span className="text-ink2 font-medium">관리자</span>에게 문의해 주세요
+      </p>
     </div>
   )
 }

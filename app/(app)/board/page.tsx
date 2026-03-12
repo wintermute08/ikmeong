@@ -32,13 +32,13 @@ export default async function BoardPage({ searchParams }: Props) {
   return (
     <div className="page-enter">
       {/* Header */}
-      <div className="px-5 pt-5 pb-4">
-        <h1 className="text-[22px] font-black text-ink">익명게시판</h1>
-        <p className="text-ink3 text-[13px] mt-0.5">솔직하게 이야기해요</p>
+      <div className="page-pad pt-5 pb-4">
+        <h1 className="h1">익명게시판</h1>
+        <p className="caption mt-0.5">솔직하게 이야기해요</p>
       </div>
 
       {/* Search */}
-      <div className="px-5 mb-4">
+      <div className="page-pad mb-4">
         <form method="GET">
           <div className="relative">
             <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-ink3" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -55,8 +55,8 @@ export default async function BoardPage({ searchParams }: Props) {
       </div>
 
       {/* Posts */}
-      <div className="px-5">
-        <div className="bg-white rounded-2xl shadow-card border border-line overflow-hidden">
+      <div className="page-pad">
+        <div className="list-card">
           {posts && posts.length > 0 ? (
             posts.map(post => <PostCard key={post.id} post={post} />)
           ) : (

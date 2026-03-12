@@ -49,12 +49,64 @@ a, button { transition: all 0.15s ease; }
 }
 
 @layer components {
+  .app-shell {
+    @apply min-h-screen bg-surface flex flex-col max-w-[480px] mx-auto relative;
+  }
+
+  .app-main {
+    @apply flex-1 pt-14 pb-24 overflow-y-auto;
+  }
+
+  .page-pad {
+    @apply px-5;
+  }
+
+  .page-section {
+    @apply px-5 mb-5;
+  }
+
+  .h1 {
+    @apply text-[24px] font-black text-ink tracking-[-0.02em];
+  }
+
+  .h2 {
+    @apply text-[18px] font-black text-ink tracking-[-0.015em];
+  }
+
+  .h3 {
+    @apply text-[15px] font-bold text-ink;
+  }
+
+  .body {
+    @apply text-[15px] text-ink leading-relaxed;
+  }
+
+  .caption {
+    @apply text-[13px] text-ink3;
+  }
+
+  .help {
+    @apply text-[12px] text-ink3 leading-relaxed;
+  }
+
+  .section-head {
+    @apply flex items-end justify-between gap-3 mb-3;
+  }
+
+  .section-title {
+    @apply text-[15px] font-bold text-ink;
+  }
+
+  .section-link {
+    @apply text-accent text-[13px] font-semibold hover:opacity-90 active:opacity-80;
+  }
+
   .btn-primary {
     @apply bg-accent text-white font-semibold rounded-2xl px-6 py-3 text-[15px] hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
-    @apply bg-surface text-ink font-semibold rounded-2xl px-6 py-3 text-[15px] hover:bg-surface2 active:scale-[0.98] transition-all;
+    @apply bg-surface text-ink font-semibold rounded-2xl px-6 py-3 text-[15px] hover:bg-surface2 active:scale-[0.98] transition-all border border-line;
   }
 
   .btn-ghost {
@@ -67,6 +119,18 @@ a, button { transition: all 0.15s ease; }
 
   .input-base {
     @apply w-full bg-surface rounded-2xl px-4 py-3.5 text-[15px] text-ink placeholder:text-ink3 border border-transparent focus:border-accent focus:bg-white focus:outline-none transition-all;
+  }
+
+  .input-label {
+    @apply text-[13px] font-semibold text-ink2 mb-1.5 block;
+  }
+
+  .alert-error {
+    @apply bg-red-50 text-red-600 text-[13px] font-medium px-4 py-3 rounded-xl;
+  }
+
+  .list-card {
+    @apply bg-white rounded-2xl shadow-card border border-line overflow-hidden;
   }
 
   .tag {
@@ -82,7 +146,7 @@ a, button { transition: all 0.15s ease; }
   }
 
   .post-row {
-    @apply flex flex-col gap-1.5 p-4 border-b border-line last:border-0 active:bg-surface cursor-pointer transition-colors hover:bg-surface/50;
+    @apply flex flex-col gap-1.5 p-4 border-b border-line last:border-0 active:bg-surface2 cursor-pointer transition-colors hover:bg-surface/50;
   }
 }
 

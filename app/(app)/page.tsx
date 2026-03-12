@@ -50,16 +50,14 @@ export default async function HomePage() {
   return (
     <div className="page-enter">
       {/* Header greeting */}
-      <div className="px-5 pt-5 pb-4">
-        <p className="text-ink3 text-[13px] mb-0.5">{greeting()} 👋</p>
-        <h1 className="text-[22px] font-black text-ink">
-          {profile?.nickname || '학생'}님
-        </h1>
+      <div className="page-pad pt-5 pb-4">
+        <p className="caption mb-0.5">{greeting()} 👋</p>
+        <h1 className="h1">{profile?.nickname || '학생'}님</h1>
       </div>
 
       {/* Pinned notices */}
       {pinnedNotices && pinnedNotices.length > 0 && (
-        <div className="px-5 mb-5">
+        <div className="page-section">
           <div className="bg-accent-light rounded-2xl overflow-hidden">
             {pinnedNotices.map((post, i) => (
               <Link key={post.id} href={`/post/${post.id}`}>
@@ -77,7 +75,7 @@ export default async function HomePage() {
       )}
 
       {/* Quick menu */}
-      <div className="px-5 mb-5">
+      <div className="page-section">
         <div className="grid grid-cols-4 gap-3">
           {[
             { href: '/notice', icon: '📢', label: '공지사항' },
@@ -97,13 +95,13 @@ export default async function HomePage() {
 
       {/* Hot posts */}
       {hotPosts && hotPosts.length > 0 && (
-        <section className="px-5 mb-5">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-ink flex items-center gap-1.5">
+        <section className="page-section">
+          <div className="section-head">
+            <h2 className="section-title flex items-center gap-1.5">
               <span>🔥</span> 지금 인기글
             </h2>
           </div>
-          <div className="bg-white rounded-2xl shadow-card border border-line overflow-hidden">
+          <div className="list-card">
             {hotPosts.map((post, i) => (
               <Link key={post.id} href={`/post/${post.id}`}>
                 <div className={`px-4 py-3.5 flex items-center gap-3 hover:bg-surface/50 transition-colors ${i > 0 ? 'border-t border-line' : ''}`}>
@@ -125,12 +123,12 @@ export default async function HomePage() {
       )}
 
       {/* Latest posts */}
-      <section className="px-5">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-[15px] font-bold text-ink">최신 글</h2>
-          <Link href="/board" className="text-accent text-[13px] font-semibold">더보기</Link>
+      <section className="page-section">
+        <div className="section-head">
+          <h2 className="section-title">최신 글</h2>
+          <Link href="/board" className="section-link">더보기</Link>
         </div>
-        <div className="bg-white rounded-2xl shadow-card border border-line overflow-hidden">
+        <div className="list-card">
           {latestPosts && latestPosts.length > 0 ? (
             latestPosts.map(post => (
               <PostCard key={post.id} post={post} />

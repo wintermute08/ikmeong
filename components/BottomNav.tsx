@@ -62,7 +62,7 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto z-20">
       <div className="bg-white/90 backdrop-blur-md border-t border-line">
-        <div className="flex items-center justify-around px-2 py-2 pb-safe">
+        <div className="flex items-center justify-around px-2 py-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
           {navItems.map(item => {
             const active = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
             return (

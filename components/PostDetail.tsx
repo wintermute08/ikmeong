@@ -99,7 +99,7 @@ export default function PostDetail({ post, comments: initialComments, userId, us
   return (
     <div className="page-enter">
       {/* Post content */}
-      <div className="px-5 pt-5">
+      <div className="page-pad pt-5">
         {/* Tags & meta */}
         <div className="flex items-center gap-2 mb-3">
           <span className={`tag ${boardTagClass[post.board]}`}>{boardLabel[post.board]}</span>
@@ -108,7 +108,7 @@ export default function PostDetail({ post, comments: initialComments, userId, us
           )}
         </div>
 
-        <h1 className="text-[20px] font-black text-ink leading-snug mb-3">{post.title}</h1>
+        <h1 className="h2 leading-snug mb-3">{post.title}</h1>
 
         <div className="flex items-center justify-between mb-4 pb-4 border-b border-line">
           <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export default function PostDetail({ post, comments: initialComments, userId, us
         </div>
 
         {/* Content */}
-        <div className="text-[15px] text-ink leading-relaxed whitespace-pre-wrap mb-6">
+        <div className="body whitespace-pre-wrap mb-6">
           {post.content}
         </div>
 
@@ -140,10 +140,10 @@ export default function PostDetail({ post, comments: initialComments, userId, us
         <div className="flex items-center gap-2.5 pb-5 border-b border-line">
           <button
             onClick={handleLike}
-            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-[14px] font-semibold transition-all active:scale-95 ${
+            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-[14px] font-semibold border transition-all active:scale-[0.98] ${
               liked
-                ? 'bg-red-50 text-red-500 border border-red-100'
-                : 'bg-surface text-ink2 border border-line'
+                ? 'bg-accent-light text-accent border-accent/30'
+                : 'bg-white text-ink2 border-line hover:bg-surface'
             }`}
           >
             {liked ? '❤️' : '🤍'} {likeCount}
@@ -152,7 +152,7 @@ export default function PostDetail({ post, comments: initialComments, userId, us
           {(isAuthor || isAdmin) && (
             <button
               onClick={handleDelete}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-[14px] font-semibold bg-surface text-red-500 border border-line"
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-[14px] font-semibold bg-white text-red-500 border border-line hover:bg-surface active:scale-[0.98] transition-all"
             >
               🗑 삭제
             </button>
@@ -161,7 +161,7 @@ export default function PostDetail({ post, comments: initialComments, userId, us
           {!isAuthor && (
             <button
               onClick={() => setShowReportSheet(true)}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-[14px] font-semibold bg-surface text-ink2 border border-line ml-auto"
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-[14px] font-semibold bg-white text-ink2 border border-line hover:bg-surface active:scale-[0.98] transition-all ml-auto"
             >
               🚩 신고
             </button>
@@ -170,7 +170,7 @@ export default function PostDetail({ post, comments: initialComments, userId, us
 
         {/* Comments */}
         <div className="pt-4">
-          <h2 className="text-[15px] font-bold text-ink mb-3">댓글 {comments.length}</h2>
+          <h2 className="section-title mb-3">댓글 {comments.length}</h2>
 
           {comments.length === 0 && (
             <div className="py-8 text-center text-ink3 text-[14px]">

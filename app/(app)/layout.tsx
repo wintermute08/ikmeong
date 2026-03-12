@@ -20,9 +20,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     .single()
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col max-w-[480px] mx-auto relative">
+    <div className="app-shell">
       <TopBar profile={profile} />
-      <main className="flex-1 pb-24 pt-14 overflow-y-auto">
+      <main className="app-main">
         {children}
       </main>
       <BottomNav />

@@ -31,11 +31,11 @@ export default function TopBar({ profile }: Props) {
               <div className="w-7 h-7 bg-accent rounded-lg flex items-center justify-center">
                 <span className="text-white font-black text-[13px]">잌</span>
               </div>
-              <span className="font-black text-[18px] text-ink">잌명</span>
+              <span className="h2 text-[18px]">잌명</span>
             </div>
             {profile?.role === 'admin' && (
               <Link href="/admin">
-                <div className="w-8 h-8 rounded-xl bg-accent-light flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-accent-light flex items-center justify-center hover:bg-accent/10 active:scale-[0.98] transition-all">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C6613F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3"/>
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
@@ -48,13 +48,14 @@ export default function TopBar({ profile }: Props) {
           <>
             <button
               onClick={() => window.history.back()}
-              className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-surface mr-2 -ml-1"
+              className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-surface active:bg-surface2 active:scale-[0.98] mr-2 -ml-1 transition-all"
+              aria-label="뒤로가기"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="15 18 9 12 15 6"/>
               </svg>
             </button>
-            <span className="font-bold text-[17px] text-ink">{title}</span>
+            <span className="h2 text-[17px] font-bold">{title}</span>
           </>
         )}
       </div>

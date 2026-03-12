@@ -29,14 +29,14 @@ export default function LoginPage() {
 
       if (res?.error) {
         setError('아이디 또는 비밀번호가 올바르지 않습니다.')
-        setLoading(false)
         return
       }
 
-      setLoading(false)
-      router.push('/')
+      router.replace('/')
+      router.refresh()
     } catch {
       setError('로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.')
+    } finally {
       setLoading(false)
     }
   }
